@@ -2,9 +2,13 @@
 
 Requirements:
 
-go get "github.com/gorilla/websocket"
 
+# Requirements:
+```golang
+go get "github.com/gorilla/websocket"
 go get "github.com/satori/go.uuid"
+```
+
 
 Assumptions
 
@@ -27,14 +31,14 @@ Assumptions
 At last check the database1 to 5 JSON files before running the client 
 
 -run client.go (upddates the database and its JSON files)
+![Image of ARCH](https://github.com/mcsoverlavdan/quorum/blob/master/imgs/Aspose.Words.e8711ed5-72c5-474f-93ad-2a31938ffb31.001.png)
 
-![design](Aspose.Words.e8711ed5-72c5-474f-93ad-2a31938ffb31.001.png)
 
 Controller acts as a broker ; client as publisher , databases as subscribers 
 
 
 
-Considering a huge employee company like AT&T, which has strict regulations on compliance online course training for their employees , maintains learning completions data in 5 databases.Any client when querying about their completion courses count should get a reply number . If the compliance coursse count is less than 70 they are non complaint .
+Considering a huge employee company , which has strict regulations on compliance online course training for their employees , maintains learning completions data in 5 databases.Any client when querying about their completion courses count should get a reply number . If the compliance coursse count is less than 70 they are non complaint .
 
 Data stored in databases are saved as JSON internally
 
@@ -87,8 +91,10 @@ And chart js to plot data
 
 
 
-Simple websocket program:
 
+# Simple websocket program:
+
+```golang
 //url address to connect to
 
 var addr = flag.String("addr", "localhost:8000", "http service address"
@@ -130,7 +136,7 @@ if err = c.WriteMessage(1, []byte(msg)); err != nil {
 `   `fmt.Println(err)
 }
 
-
+```
 
 
 
@@ -138,29 +144,26 @@ if err = c.WriteMessage(1, []byte(msg)); err != nil {
 Controller .go
 
 Whenever a the websocket connection reads a message it send the data throught the queue to the go routine log()
-
-![](Aspose.Words.e8711ed5-72c5-474f-93ad-2a31938ffb31.002.png)
+![Image of ARCH](https://github.com/mcsoverlavdan/quorum/blob/master/imgs/Aspose.Words.e8711ed5-72c5-474f-93ad-2a31938ffb31.002.png)
 
 Log()
-
-![](Aspose.Words.e8711ed5-72c5-474f-93ad-2a31938ffb31.003.png)
+![Image of ARCH](https://github.com/mcsoverlavdan/quorum/blob/master/imgs/Aspose.Words.e8711ed5-72c5-474f-93ad-2a31938ffb31.003.png)
 
 The data is converted from JSON to go struct
 
-![](Aspose.Words.e8711ed5-72c5-474f-93ad-2a31938ffb31.004.png)
-
-![](Aspose.Words.e8711ed5-72c5-474f-93ad-2a31938ffb31.005.png)
+![Image of ARCH](https://github.com/mcsoverlavdan/quorum/blob/master/imgs/Aspose.Words.e8711ed5-72c5-474f-93ad-2a31938ffb31.004.png)
+![Image of ARCH](https://github.com/mcsoverlavdan/quorum/blob/master/imgs/Aspose.Words.e8711ed5-72c5-474f-93ad-2a31938ffb31.005.png)
 
 
 With action message in the json we determine wherether to publish or subscribe or readquorum or write quorum(response from the databases)
 
-![](Aspose.Words.e8711ed5-72c5-474f-93ad-2a31938ffb31.006.png)
+![Image of ARCH](https://github.com/mcsoverlavdan/quorum/blob/master/imgs/Aspose.Words.e8711ed5-72c5-474f-93ad-2a31938ffb31.006.png)
 
 In both read and write make total databses/2+1 values are read or written 
 
 The number of databases are the subscribers 
 
-![](Aspose.Words.e8711ed5-72c5-474f-93ad-2a31938ffb31.007.png)
+![Image of ARCH](https://github.com/mcsoverlavdan/quorum/blob/master/imgs/Aspose.Words.e8711ed5-72c5-474f-93ad-2a31938ffb31.007.png)
 
 Client.go
 
@@ -168,26 +171,19 @@ Client messages the commands in the form of JSON
 
 Based on the data in message and tablevalue the data is edited by the databases
 
-![](Aspose.Words.e8711ed5-72c5-474f-93ad-2a31938ffb31.008.png)
+![Image of ARCH](https://github.com/mcsoverlavdan/quorum/blob/master/imgs/Aspose.Words.e8711ed5-72c5-474f-93ad-2a31938ffb31.008.png)
 
 Databses uses JSON as internal storage; if write then data is read and updated with the new value and version number is increased 
 
 Expect for krishnan where the data is not written to databases 4 and 5 to show quorum read protocol
-
-![](Aspose.Words.e8711ed5-72c5-474f-93ad-2a31938ffb31.009.png)
+![Image of ARCH](https://github.com/mcsoverlavdan/quorum/blob/master/imgs/Aspose.Words.e8711ed5-72c5-474f-93ad-2a31938ffb31.009.png)
 
 If read then the data is sent back using the versin number
+![Image of ARCH](https://github.com/mcsoverlavdan/quorum/blob/master/imgs/Aspose.Words.e8711ed5-72c5-474f-93ad-2a31938ffb31.010.png)
 
-![](Aspose.Words.e8711ed5-72c5-474f-93ad-2a31938ffb31.010.png)
-
-![](Aspose.Words.e8711ed5-72c5-474f-93ad-2a31938ffb31.011.png)
-
-![](Aspose.Words.e8711ed5-72c5-474f-93ad-2a31938ffb31.012.png)
-
-![](Aspose.Words.e8711ed5-72c5-474f-93ad-2a31938ffb31.013.png)
-
-![](Aspose.Words.e8711ed5-72c5-474f-93ad-2a31938ffb31.014.png)
-
-![](Aspose.Words.e8711ed5-72c5-474f-93ad-2a31938ffb31.015.png)
-
-![](Aspose.Words.e8711ed5-72c5-474f-93ad-2a31938ffb31.016.png)
+![Image of ARCH](https://github.com/mcsoverlavdan/quorum/blob/master/imgs/Aspose.Words.e8711ed5-72c5-474f-93ad-2a31938ffb31.011.png)
+![Image of ARCH](https://github.com/mcsoverlavdan/quorum/blob/master/imgs/Aspose.Words.e8711ed5-72c5-474f-93ad-2a31938ffb31.012.png)
+![Image of ARCH](https://github.com/mcsoverlavdan/quorum/blob/master/imgs/Aspose.Words.e8711ed5-72c5-474f-93ad-2a31938ffb31.013.png)
+![Image of ARCH](https://github.com/mcsoverlavdan/quorum/blob/master/imgs/Aspose.Words.e8711ed5-72c5-474f-93ad-2a31938ffb31.014.png)
+![Image of ARCH](https://github.com/mcsoverlavdan/quorum/blob/master/imgs/Aspose.Words.e8711ed5-72c5-474f-93ad-2a31938ffb31.015.png)
+![Image of ARCH](https://github.com/mcsoverlavdan/quorum/blob/master/imgs/Aspose.Words.e8711ed5-72c5-474f-93ad-2a31938ffb31.016.png)
